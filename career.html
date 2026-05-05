@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Career</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #080f08;
+    color: #d4e8d4;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(8,15,8,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #7abf7a;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #d4e8d4; }
+
+  /* Scene 1 — intro */
+  .scene-story {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-story svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .story-text {
+    position: relative;
+    z-index: 10;
+    max-width: 540px;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .story-text h1 {
+    font-size: 1.9rem;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    color: #a8d4a8;
+    margin-bottom: 20px;
+  }
+  .story-text p {
+    font-size: 0.88rem;
+    line-height: 2;
+    color: #8ab48a;
+    font-style: italic;
+  }
+  .scroll-hint {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: #3a7a3a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, rgba(8,15,8,0.95), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .fog-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(8,15,8,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Content area */
+  .content-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 80px 32px 120px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    margin-top: 72px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-header h2 {
+    font-size: 1.1rem;
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    color: #a8d4a8;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(100,180,100,0.3), transparent);
+  }
+
+  /* Timeline entries */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .timeline-entry {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0 28px;
+    position: relative;
+  }
+
+  .timeline-entry::before {
+    content: '';
+    position: absolute;
+    left: 168px;
+    top: 8px;
+    bottom: -36px;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(100,180,100,0.25), transparent);
+  }
+  .timeline-entry:last-child::before { display: none; }
+
+  .timeline-date {
+    text-align: right;
+    padding-top: 2px;
+  }
+  .timeline-date .year {
+    font-size: 0.78rem;
+    color: #4a8a4a;
+    letter-spacing: 0.08em;
+    font-style: italic;
+  }
+  .timeline-date .duration {
+    font-size: 0.68rem;
+    color: #2a5a2a;
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: 163px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4a8a4a;
+    border: 2px solid #080f08;
+    box-shadow: 0 0 6px rgba(100,180,100,0.4);
+  }
+
+  .timeline-body { padding-left: 24px; }
+
+  .timeline-body h3 {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #c4dcc4;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .timeline-body .org {
+    font-size: 0.78rem;
+    color: #5a9a5a;
+    font-style: italic;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .timeline-body p {
+    font-size: 0.82rem;
+    line-height: 1.85;
+    color: #7aaa7a;
+    font-style: italic;
+  }
+
+  /* Skills */
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .skill-tag {
+    background: rgba(20,40,20,0.8);
+    border: 1px solid rgba(100,180,100,0.2);
+    border-radius: 3px;
+    padding: 6px 14px;
+    font-size: 0.76rem;
+    color: #7aaa7a;
+    letter-spacing: 0.06em;
+    font-style: italic;
+  }
+
+  /* Resume link */
+  .resume-link-wrap {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .resume-link {
+    display: inline-block;
+    border: 1px solid rgba(100,180,100,0.3);
+    border-radius: 4px;
+    padding: 14px 36px;
+    color: #7abf7a;
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .resume-link:hover {
+    border-color: rgba(100,180,100,0.6);
+    color: #a8d4a8;
+    background: rgba(20,40,20,0.5);
+  }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #3a6a3a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a {
+    color: #4a8a4a;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumb a:hover { color: #7abf7a; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../index.html">Warren</a>
+</header>
+
+<!-- Scene 1: Intro -->
+<section class="scene-story">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="forestGlow" cx="50%" cy="70%" r="65%">
+        <stop offset="0%" stop-color="#0d2a0d" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#080f08" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="sunGlow" cx="50%" cy="15%" r="35%">
+        <stop offset="0%" stop-color="#1a3a1a" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#080f08" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <rect width="800" height="600" fill="#080f08"/>
+    <rect width="800" height="600" fill="url(#forestGlow)"/>
+    <rect width="800" height="600" fill="url(#sunGlow)"/>
+
+    <!-- Stars/light through canopy -->
+    <g fill="#c4dcc4" opacity="0.3">
+      <circle cx="120" cy="50" r="1"/><circle cx="240" cy="30" r="0.8"/>
+      <circle cx="380" cy="45" r="1.1"/><circle cx="510" cy="25" r="0.9"/>
+      <circle cx="650" cy="55" r="0.8"/><circle cx="760" cy="35" r="1"/>
+      <circle cx="70"  cy="100" r="0.7"/><circle cx="700" cy="90" r="0.9"/>
+    </g>
+
+    <!-- Light rays filtering through canopy -->
+    <g opacity="0.04">
+      <path d="M200 0 L120 600" stroke="#a8d4a8" stroke-width="60"/>
+      <path d="M420 0 L380 600" stroke="#a8d4a8" stroke-width="35"/>
+      <path d="M650 0 L720 600" stroke="#a8d4a8" stroke-width="50"/>
+    </g>
+
+    <!-- Forest floor -->
+    <ellipse cx="400" cy="590" rx="500" ry="35" fill="#050c05"/>
+
+    <!-- Background trees -->
+    <g fill="#0d1a0d" opacity="0.9">
+      <rect x="50"  y="300" width="22" height="300"/><ellipse cx="61"  cy="295" rx="38" ry="80"/>
+      <rect x="110" y="350" width="16" height="250"/><ellipse cx="118" cy="346" rx="28" ry="60"/>
+      <rect x="680" y="320" width="20" height="280"/><ellipse cx="690" cy="315" rx="34" ry="72"/>
+      <rect x="730" y="300" width="24" height="300"/><ellipse cx="742" cy="294" rx="40" ry="82"/>
+      <rect x="160" y="380" width="12" height="220"/><ellipse cx="166" cy="376" rx="22" ry="48"/>
+      <rect x="620" y="360" width="14" height="240"/><ellipse cx="627" cy="356" rx="24" ry="52"/>
+    </g>
+
+    <!-- Main foreground trunk -->
+    <path d="M390 600 Q388 500 390 390 Q392 280 394 150"
+          stroke="#1a2e1a" stroke-width="30" fill="none" stroke-linecap="round"/>
+    <path d="M394 600 Q392 500 394 390 Q396 280 398 150"
+          stroke="#2a4a2a" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.35"/>
+
+    <!-- Roots -->
+    <path d="M390 590 Q350 605 305 614" stroke="#1a2e1a" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M391 592 Q430 606 475 613" stroke="#1a2e1a" stroke-width="8"  fill="none" stroke-linecap="round"/>
+    <path d="M390 592 Q360 615 335 628" stroke="#1a2e1a" stroke-width="6"  fill="none" stroke-linecap="round"/>
+
+    <!-- Canopy suggestion -->
+    <g fill="#0f200f" opacity="0.7">
+      <ellipse cx="394" cy="130" rx="110" ry="70"/>
+      <ellipse cx="340" cy="155" rx="70"  ry="50"/>
+      <ellipse cx="448" cy="148" rx="75"  ry="52"/>
+      <ellipse cx="370" cy="120" rx="55"  ry="40"/>
+      <ellipse cx="420" cy="115" rx="60"  ry="42"/>
+    </g>
+  </svg>
+
+  <div class="fog-bottom"></div>
+
+  <div class="story-text">
+    <h1>Career</h1>
+    <p>
+      Hey! My name is Warren and I'm a Math and CS student at UIUC, pursuing
+      honors in both the James Scholar and Campus Honors programs. I have many
+      interests, but my broad career goal is to use AI for good — whether that
+      be AI safety and ethics or solving real-world problems with it.
+      <br><br>
+      The moment that AI really inspired me was when AlphaFold came out and
+      revolutionized the field of biology and drug discovery. To me, this moment
+      showed the good that can come from AI and I work every day to emulate it.
+      The problem I'm dedicated to currently is using AI to model climate change
+      and the natural disasters it brings.
+      <br><br>
+      My long-term goal is to pursue a PhD in Atmospheric and Climate Science and
+      apply artificial intelligence to improve our ability to predict and respond
+      to climate change. I believe AI-enhanced climate models will be instrumental
+      in addressing one of humanity's most pressing challenges, and I'm committed
+      to contributing to this critical work.
+    </p>
+    <div class="scroll-hint">↓ scroll to explore ↓</div>
+  </div>
+</section>
+
+<!-- Main content -->
+<div class="content-wrap">
+
+  <!-- Current & Upcoming -->
+  <div class="section-header">
+    <h2>Now</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-entry">
+      <div class="timeline-date">
+        <div class="year">Summer 2025</div>
+        <div class="duration">Upcoming</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-body">
+        <h3>Science Undergraduate Laboratory Internship</h3>
+        <div class="org">Pacific Northwest National Laboratories</div>
+        <p>I'll be working with Dr. Bryce Harrop and Dr. Claudia Tebaldi as part of the
+        Water Cycle Changes and Impacts Group — validating AI emulators for physical
+        accuracy and contributing to the Energy Exascale Earth System Model (E3SM) project.
+        I'm incredibly excited for this one.</p>
+      </div>
+    </div>
+
+    <div class="timeline-entry">
+      <div class="timeline-date">
+        <div class="year">2024 — Present</div>
+        <div class="duration">Current</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-body">
+        <h3>Research Assistant</h3>
+        <div class="org">Prof. Gan Zhang's Climate Modeling, Predictions, and Applications Group — UIUC</div>
+        <p>I develop neural operator models for atmospheric prediction using idealized
+        simulations and spectral methods. My work involves optimizing computational
+        pipelines for HPC deployment and building physics-informed validation frameworks
+        to ensure model accuracy.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Previously -->
+  <div class="section-header">
+    <h2>Previously</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-entry">
+      <div class="timeline-date">
+        <div class="year">Sep. 2025 — Present</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-body">
+        <h3>Data Analyst</h3>
+        <div class="org">Statistics in the Community — UIUC</div>
+        <p>Analyzed 25,000+ food assistance program records for the Eastern Illinois Foodbank,
+        built analytics pipelines in Python and R for demographic reporting, and automated
+        equity tracking to support resource allocation decisions.</p>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">
+        <div class="year">Jun. 2024 — Aug. 2025</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-body">
+        <h3>Software Development Intern</h3>
+        <div class="org">Global Trade Capital Foreign Exchange Ltd.</div>
+        <p>Engineered Python and SQL pipelines to analyze broker login data for over
+        100,000 international clients and designed an automated notification system
+        that identified over 5,000 security threats through data analysis.</p>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">
+        <div class="year">Jun. 2024 — Aug. 2024</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-body">
+        <h3>Research Assistant</h3>
+        <div class="org">Florida State University — Prof. Daniel G. Schwartz</div>
+        <p>Researched possibility theory, implemented Dijkstra's algorithm in Python
+        to compare possibility and probability theory, and contributed to a paper
+        currently under review. Also authored an independent paper on possibility
+        theory for stock market indicators, published on TechRxiv with 24 years of
+        data across 11 simulations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="section-header">
+    <h2>Skills</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="skills-grid">
+    <span class="skill-tag">Python</span>
+    <span class="skill-tag">C / C++</span>
+    <span class="skill-tag">SQL</span>
+    <span class="skill-tag">R</span>
+    <span class="skill-tag">JavaScript</span>
+    <span class="skill-tag">Kotlin</span>
+    <span class="skill-tag">PyTorch</span>
+    <span class="skill-tag">TensorFlow</span>
+    <span class="skill-tag">scikit-learn</span>
+    <span class="skill-tag">XGBoost</span>
+    <span class="skill-tag">pandas / NumPy</span>
+    <span class="skill-tag">Google Earth Engine</span>
+    <span class="skill-tag">GeoPandas</span>
+    <span class="skill-tag">OpenCV</span>
+    <span class="skill-tag">Google Cloud Platform</span>
+    <span class="skill-tag">High-Performance Computing</span>
+    <span class="skill-tag">Spectral Methods</span>
+    <span class="skill-tag">Git / GitHub</span>
+  </div>
+
+  <!-- Resume -->
+  <div class="section-header">
+    <h2>Resume</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div style="width:100%; border:1px solid rgba(100,180,100,0.2); border-radius:4px; overflow:hidden;">
+    <iframe src="resume.pdf" width="100%" height="720px"
+      style="display:block; border:none; background:#080f08;">
+    </iframe>
+  </div>
+  <div class="resume-link-wrap" style="margin-top:16px;">
+    <a class="resume-link" href="resume.pdf" target="_blank">Open Resume in New Tab →</a>
+  </div>
+
+</div>
+
+<nav class="breadcrumb">
+  <a href="../index.html">Home</a>
+  <span>›</span>
+  <span>Career</span>
+</nav>
+
+</body>
+</html>

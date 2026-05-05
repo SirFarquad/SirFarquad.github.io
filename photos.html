@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Photos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0e0c0a;
+    color: #e0d8cc;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(14,12,10,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #c4a96e;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e0d8cc; }
+
+  /* Scene 1 — intro */
+  .scene-story {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-story svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .story-text {
+    position: relative;
+    z-index: 10;
+    max-width: 500px;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .story-text h1 {
+    font-size: 1.9rem;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    color: #e0d0b0;
+    margin-bottom: 20px;
+  }
+  .story-text p {
+    font-size: 0.9rem;
+    line-height: 2;
+    color: #b0a080;
+    font-style: italic;
+  }
+  .scroll-hint {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: #7a6a4a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, rgba(14,12,10,0.95), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .fog-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(14,12,10,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Scene 2 — branches */
+  .scene-branches {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-branches svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .branch-cards {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 24px;
+    padding: 0 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .branch-card {
+    background: rgba(14,12,10,0.75);
+    border: 1px solid rgba(200,169,110,0.18);
+    border-radius: 6px;
+    padding: 32px 36px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    min-width: 190px;
+  }
+  .branch-card:hover {
+    border-color: rgba(200,169,110,0.5);
+    background: rgba(22,18,12,0.9);
+    transform: translateY(-4px);
+  }
+  .branch-card .icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 14px;
+    opacity: 0.8;
+  }
+  .branch-card h3 {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: normal;
+    letter-spacing: 0.08em;
+    color: #c4a96e;
+    margin-bottom: 8px;
+  }
+  .branch-card p {
+    font-size: 0.76rem;
+    font-style: italic;
+    color: #7a6a4a;
+    line-height: 1.6;
+  }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #5a4a2a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a {
+    color: #7a6a4a;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumb a:hover { color: #c4a96e; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../index.html">Warren</a>
+</header>
+
+<!-- Scene 1: Intro -->
+<section class="scene-story">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="filmGlow" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#2a2018" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#0e0c0a" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Film grain texture suggestion via subtle pattern -->
+      <filter id="grain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+        <feColorMatrix type="saturate" values="0"/>
+        <feBlend in="SourceGraphic" mode="multiply" result="blend"/>
+        <feComposite in="blend" in2="SourceGraphic" operator="in"/>
+      </filter>
+    </defs>
+
+    <rect width="800" height="600" fill="#0e0c0a"/>
+    <rect width="800" height="600" fill="url(#filmGlow)"/>
+
+    <!-- Subtle film grain overlay -->
+    <rect width="800" height="600" fill="#1a1510" opacity="0.3" filter="url(#grain)"/>
+
+    <!-- Faint horizon line — like a landscape photo -->
+    <line x1="0" y1="340" x2="800" y2="340" stroke="#2a2018" stroke-width="1" opacity="0.5"/>
+
+    <!-- Abstract landscape silhouette -->
+    <path d="M0 340 Q100 320 180 330 Q260 340 320 310 Q380 280 440 315 Q500 340 580 325 Q660 310 740 330 Q780 338 800 335 L800 600 L0 600 Z"
+          fill="#0a0806" opacity="0.9"/>
+
+    <!-- Soft light leak — top left, like analog photography -->
+    <ellipse cx="80" cy="80" rx="120" ry="90" fill="#3a2a10" opacity="0.18"/>
+    <ellipse cx="60" cy="60" rx="60"  ry="50" fill="#5a3a14" opacity="0.1"/>
+
+    <!-- Stars / bokeh dots -->
+    <g fill="#e0d0b0" opacity="0.35">
+      <circle cx="180" cy="80"  r="1.2"/><circle cx="290" cy="55"  r="0.9"/>
+      <circle cx="410" cy="40"  r="1.4"/><circle cx="530" cy="70"  r="0.8"/>
+      <circle cx="660" cy="48"  r="1.1"/><circle cx="740" cy="90"  r="0.9"/>
+      <circle cx="120" cy="130" r="0.7"/><circle cx="700" cy="120" r="1"/>
+      <circle cx="350" cy="100" r="0.8"/><circle cx="480" cy="120" r="1.2"/>
+    </g>
+
+    <!-- Soft bokeh circles — out of focus lights -->
+    <g fill="#c4a060" opacity="0.06">
+      <circle cx="150" cy="200" r="55"/>
+      <circle cx="620" cy="180" r="40"/>
+      <circle cx="400" cy="260" r="30"/>
+      <circle cx="700" cy="280" r="48"/>
+      <circle cx="80"  cy="300" r="35"/>
+    </g>
+
+    <!-- Film sprocket holes suggestion — very subtle -->
+    <g fill="none" stroke="#1a1510" stroke-width="1" opacity="0.4">
+      <rect x="18" y="80"  width="12" height="18" rx="2"/>
+      <rect x="18" y="120" width="12" height="18" rx="2"/>
+      <rect x="18" y="160" width="12" height="18" rx="2"/>
+      <rect x="18" y="200" width="12" height="18" rx="2"/>
+      <rect x="770" y="80"  width="12" height="18" rx="2"/>
+      <rect x="770" y="120" width="12" height="18" rx="2"/>
+      <rect x="770" y="160" width="12" height="18" rx="2"/>
+      <rect x="770" y="200" width="12" height="18" rx="2"/>
+    </g>
+  </svg>
+
+  <div class="fog-bottom"></div>
+
+  <div class="story-text">
+    <h1>Photos</h1>
+    <p>
+      I enjoy capturing moments, especially of nature and also of my friends and I.
+      Here are some of my favorites.
+    </p>
+    <div class="scroll-hint">↓ explore ↓</div>
+  </div>
+</section>
+
+<!-- Scene 2: Branches -->
+<section class="scene-branches">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="600" fill="#0e0c0a"/>
+    <rect width="800" height="600" fill="url(#filmGlow)" opacity="0.5"/>
+    <!-- Film strip lines across -->
+    <line x1="0" y1="100" x2="800" y2="100" stroke="#1a1510" stroke-width="1" opacity="0.5"/>
+    <line x1="0" y1="500" x2="800" y2="500" stroke="#1a1510" stroke-width="1" opacity="0.5"/>
+    <g fill="none" stroke="#1a1510" stroke-width="1" opacity="0.35">
+      <rect x="18" y="115" width="12" height="18" rx="2"/>
+      <rect x="18" y="150" width="12" height="18" rx="2"/>
+      <rect x="18" y="185" width="12" height="18" rx="2"/>
+      <rect x="770" y="115" width="12" height="18" rx="2"/>
+      <rect x="770" y="150" width="12" height="18" rx="2"/>
+      <rect x="770" y="185" width="12" height="18" rx="2"/>
+    </g>
+  </svg>
+
+  <div class="fog-top"></div>
+  <div class="fog-bottom"></div>
+
+  <div class="branch-cards">
+    <a class="branch-card" href="photos/sky.html">
+      <span class="icon">☁</span>
+      <h3>Sky</h3>
+      <p>Sunsets, clouds,<br>&amp; open air</p>
+    </a>
+    <a class="branch-card" href="photos/nature.html">
+      <span class="icon">🌿</span>
+      <h3>Nature</h3>
+      <p>Trees, landscapes,<br>&amp; the living world</p>
+    </a>
+    <a class="branch-card" href="photos/friends.html">
+      <span class="icon">◎</span>
+      <h3>Friends</h3>
+      <p>Moments &amp; memories<br>with the people I love</p>
+    </a>
+  </div>
+</section>
+
+<nav class="breadcrumb">
+  <a href="../index.html">Home</a>
+  <span>›</span>
+  <span>Photos</span>
+</nav>
+
+</body>
+</html>

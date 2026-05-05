@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren's World</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a120a;
+    color: #e8dcc8;
+    font-family: Georgia, serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  /* Fixed name header */
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(26,18,10,0.95), transparent);
+    pointer-events: none;
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #c8a96e;
+    text-decoration: none;
+    pointer-events: all;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e8dcc8; }
+
+  /* Each scroll section is full viewport */
+  .scene {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* SVG fills each scene */
+  .scene svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Text overlaid on trunk */
+  .trunk-text {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 380px;
+    padding: 0 24px;
+  }
+  .trunk-text h2 {
+    font-family: Georgia, serif;
+    font-size: 1.7rem;
+    font-weight: normal;
+    color: #e8dcc8;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .trunk-text p {
+    font-family: Georgia, serif;
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: #c4b08a;
+    font-style: italic;
+  }
+  .trunk-portrait {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 16px;
+    display: block;
+    border: 2px solid rgba(200,169,110,0.3);
+  }
+  .scroll-hint {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: #7a6a4a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Branch cards for scene 2 */
+  .branches-overlay {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 780px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .branch-card {
+    background: rgba(26,18,10,0.72);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 6px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    text-decoration: none;
+    display: block;
+  }
+  .branch-card:hover {
+    border-color: rgba(200,169,110,0.6);
+    background: rgba(40,28,14,0.88);
+    transform: translateY(-3px);
+  }
+
+  .branch-card .branch-icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .branch-card h3 {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .branch-card p {
+    font-family: Georgia, serif;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #8a7a5a;
+    line-height: 1.6;
+  }
+
+  .card-swimming h3 { color: #7acbef; }
+  .card-career   h3 { color: #8dcf8d; }
+  .card-media    h3 { color: #b89ad4; }
+  .card-photos   h3 { color: #d4a06a; }
+
+  /* Misty ground fog */
+  .fog {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+    background: linear-gradient(to top, rgba(26,18,10,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .fog-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(26,18,10,0.85), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Subtle parallax stars in scene 2 */
+  .stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Fixed name/home button -->
+<header id="site-header">
+  <a href="#scene-trunk">Warren</a>
+</header>
+
+<!-- SCENE 1: The Trunk -->
+<section class="scene" id="scene-trunk">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- Night sky gradient -->
+    <defs>
+      <radialGradient id="skyGrad" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#2a1f0e"/>
+        <stop offset="100%" stop-color="#0d0906"/>
+      </radialGradient>
+      <radialGradient id="glowTrunk" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#4a3520" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#0d0906" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="800" height="600" fill="url(#skyGrad)"/>
+
+    <!-- Stars -->
+    <g fill="#e8dcc8" opacity="0.5">
+      <circle cx="80" cy="40" r="0.8"/><circle cx="160" cy="90" r="1"/>
+      <circle cx="230" cy="30" r="0.7"/><circle cx="320" cy="60" r="1.1"/>
+      <circle cx="410" cy="20" r="0.9"/><circle cx="500" cy="55" r="0.7"/>
+      <circle cx="590" cy="35" r="1"/><circle cx="680" cy="70" r="0.8"/>
+      <circle cx="740" cy="25" r="0.9"/><circle cx="50" cy="110" r="0.7"/>
+      <circle cx="130" cy="140" r="1.1"/><circle cx="700" cy="110" r="0.8"/>
+      <circle cx="760" cy="145" r="0.9"/><circle cx="350" cy="45" r="0.6"/>
+      <circle cx="460" cy="85" r="1"/><circle cx="620" cy="95" r="0.7"/>
+    </g>
+
+    <!-- Glow behind trunk -->
+    <ellipse cx="400" cy="380" rx="180" ry="220" fill="url(#glowTrunk)"/>
+
+    <!-- Far background trees (silhouette) -->
+    <g fill="#1a1208" opacity="0.7">
+      <rect x="60" y="380" width="18" height="140"/>
+      <ellipse cx="69" cy="375" rx="28" ry="55"/>
+      <rect x="110" y="400" width="14" height="120"/>
+      <ellipse cx="117" cy="396" rx="22" ry="44"/>
+      <rect x="660" y="390" width="16" height="130"/>
+      <ellipse cx="668" cy="385" rx="26" ry="50"/>
+      <rect x="710" y="370" width="20" height="150"/>
+      <ellipse cx="720" cy="364" rx="32" ry="58"/>
+    </g>
+
+    <!-- Main trunk — wide, tall, central -->
+    <path d="M370 600 Q365 520 368 440 Q370 360 374 280 Q378 200 382 120"
+          stroke="#3d2a10" stroke-width="38" fill="none" stroke-linecap="round"/>
+    <!-- Trunk bark highlight -->
+    <path d="M378 600 Q374 520 376 440 Q378 360 381 280 Q384 200 387 120"
+          stroke="#5a3e1a" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.4"/>
+
+    <!-- Roots spreading out -->
+    <path d="M370 590 Q330 600 280 610" stroke="#3d2a10" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M370 590 Q340 610 310 630" stroke="#3d2a10" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M375 590 Q410 600 460 608" stroke="#3d2a10" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M375 590 Q420 612 455 628" stroke="#3d2a10" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+    <!-- A few bare upper branches hinting at more -->
+    <path d="M380 180 Q350 155 310 140" stroke="#3d2a10" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M381 160 Q400 130 420 115" stroke="#3d2a10" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M382 200 Q360 185 335 175" stroke="#3d2a10" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+    <!-- Ground -->
+    <ellipse cx="400" cy="590" rx="500" ry="40" fill="#1a1208"/>
+  </svg>
+
+  <div class="fog"></div>
+
+  <!-- Text on the trunk -->
+  <div class="trunk-text">
+    <h2>Hey! I'm Warren and this is my world tree.</h2>
+    <img class="trunk-portrait" src="https://lh3.googleusercontent.com/pw/AP1GczM3qxpNTEGshroQkUQ5cB1HvJrNnwsQb87ixRyaTWszqxLCao1em1l5vMH37RzF3zm_xX5OLKB1zop7nQp4VMnFEIzfJlA9mGZm7BtLd-qfzY4oBK8=w2400" alt="">
+    <p>
+      I am currently a freshman at the University of Illinois
+      Urbana-Champaign majoring in Math and CS. I was born in
+      Hackensack, New Jersey and grew up in Franklin Lakes.
+      I attended Ramapo High School. My mom and dad are both
+      very supportive and my little sister Angela is my angel.
+    </p>
+    <div class="scroll-hint">↓ click on a branch to learn more ↓</div>
+  </div>
+</section>
+
+<!-- SCENE 2: Zoomed out — the branches appear -->
+<section class="scene" id="scene-branches">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="skyGrad2" cx="50%" cy="40%" r="80%">
+        <stop offset="0%" stop-color="#1a2a1a"/>
+        <stop offset="100%" stop-color="#0a0d0a"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#skyGrad2)"/>
+
+    <!-- More stars, denser — we're higher up now -->
+    <g fill="#e8dcc8" opacity="0.45">
+      <circle cx="40"  cy="30"  r="0.9"/><circle cx="100" cy="55"  r="0.7"/>
+      <circle cx="175" cy="20"  r="1.1"/><circle cx="250" cy="70"  r="0.8"/>
+      <circle cx="330" cy="15"  r="0.9"/><circle cx="440" cy="40"  r="1"/>
+      <circle cx="530" cy="25"  r="0.7"/><circle cx="610" cy="60"  r="1.1"/>
+      <circle cx="695" cy="18"  r="0.8"/><circle cx="760" cy="50"  r="0.9"/>
+      <circle cx="70"  cy="100" r="0.7"/><circle cx="720" cy="90"  r="1"/>
+      <circle cx="150" cy="130" r="0.8"/><circle cx="650" cy="120" r="0.7"/>
+      <circle cx="200" cy="80"  r="1"/><circle cx="580" cy="80"  r="0.9"/>
+      <circle cx="380" cy="55"  r="0.8"/><circle cx="490" cy="95"  r="0.7"/>
+    </g>
+
+    <!-- Distant forest floor far below -->
+    <g fill="#0d1a0d" opacity="0.8">
+      <rect x="0"   y="540" width="800" height="60"/>
+      <ellipse cx="80"  cy="540" rx="55" ry="25"/>
+      <ellipse cx="200" cy="538" rx="45" ry="20"/>
+      <ellipse cx="600" cy="540" rx="50" ry="22"/>
+      <ellipse cx="720" cy="537" rx="60" ry="26"/>
+    </g>
+
+    <!-- Trunk — now thinner, we're zoomed out -->
+    <path d="M395 600 Q393 500 394 390 Q395 280 396 170 Q397 90 398 30"
+          stroke="#3d2a10" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M398 600 Q396 500 397 390 Q398 280 399 170 Q400 90 401 30"
+          stroke="#5a3e1a" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.35"/>
+
+    <!-- SWIMMING branch — upper left -->
+    <path d="M396 220 Q360 190 310 165 Q268 143 230 128" stroke="#3d7fa0" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M310 165 Q290 148 268 138" stroke="#3d7fa0" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Swimming leaves -->
+    <circle cx="218" cy="122" r="28" fill="#1a5a7a" opacity="0.5"/>
+    <circle cx="240" cy="108" r="20" fill="#2a7a9a" opacity="0.55"/>
+    <circle cx="200" cy="108" r="17" fill="#1a4a6a" opacity="0.5"/>
+    <circle cx="258" cy="112" r="15" fill="#3a8aaa" opacity="0.45"/>
+    <circle cx="228" cy="96"  r="13" fill="#2a6a8a" opacity="0.4"/>
+
+    <!-- CAREER branch — upper right -->
+    <path d="M397 220 Q435 190 488 165 Q528 143 568 128" stroke="#3a7a3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M488 165 Q508 148 530 138" stroke="#3a7a3a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Career leaves -->
+    <circle cx="580" cy="122" r="28" fill="#1a5a1a" opacity="0.5"/>
+    <circle cx="558" cy="108" r="20" fill="#2a7a2a" opacity="0.55"/>
+    <circle cx="598" cy="108" r="17" fill="#1a4a1a" opacity="0.5"/>
+    <circle cx="540" cy="112" r="15" fill="#3a8a3a" opacity="0.45"/>
+    <circle cx="570" cy="96"  r="13" fill="#2a6a2a" opacity="0.4"/>
+
+    <!-- MEDIA branch — mid left -->
+    <path d="M395 310 Q352 285 298 265 Q255 248 215 236" stroke="#7a4aaa" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M298 265 Q272 250 248 240" stroke="#7a4aaa" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- Media leaves -->
+    <circle cx="202" cy="230" r="24" fill="#4a2a7a" opacity="0.5"/>
+    <circle cx="222" cy="218" r="17" fill="#6a3a9a" opacity="0.55"/>
+    <circle cx="186" cy="218" r="15" fill="#3a1a6a" opacity="0.5"/>
+    <circle cx="238" cy="222" r="13" fill="#7a4aaa" opacity="0.45"/>
+    <circle cx="210" cy="206" r="11" fill="#5a2a8a" opacity="0.4"/>
+
+    <!-- PHOTOS branch — mid right -->
+    <path d="M396 310 Q440 285 494 265 Q536 248 576 236" stroke="#aa6a2a" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M494 265 Q520 250 544 240" stroke="#aa6a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- Photos leaves -->
+    <circle cx="590" cy="230" r="24" fill="#7a3a0a" opacity="0.5"/>
+    <circle cx="570" cy="218" r="17" fill="#9a5a2a" opacity="0.55"/>
+    <circle cx="606" cy="218" r="15" fill="#6a2a0a" opacity="0.5"/>
+    <circle cx="554" cy="222" r="13" fill="#aa6a3a" opacity="0.45"/>
+    <circle cx="582" cy="206" r="11" fill="#8a4a1a" opacity="0.4"/>
+
+    <!-- Roots hinted below -->
+    <path d="M394 580 Q360 592 320 598" stroke="#2a1a08" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M396 580 Q430 592 470 597" stroke="#2a1a08" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.7"/>
+  </svg>
+
+  <div class="fog-top"></div>
+  <div class="fog"></div>
+
+  <div class="branches-overlay">
+    <a class="branch-card card-swimming" href="swimming.html">
+      <span class="branch-icon">〰</span>
+      <h3>Swimming</h3>
+      <p>High school & college career,<br>pictures & videos</p>
+    </a>
+    <a class="branch-card card-career" href="career.html">
+      <span class="branch-icon">🌿</span>
+      <h3>Career</h3>
+      <p>Resume, research,<br>& current projects</p>
+    </a>
+
+    <a class="branch-card card-photos" href="photos.html">
+      <span class="branch-icon">◎</span>
+      <h3>Photos</h3>
+      <p>Trees, sky, animals,<br>& buildings</p>
+    </a>
+  </div>
+</section>
+
+</body>
+</html>

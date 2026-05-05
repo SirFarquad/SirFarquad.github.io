@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Shows & Movies</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0810;
+    color: #e0d8f0;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(10,8,16,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #b89ad4;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e0d8f0; }
+
+  .scene-intro {
+    width: 100%;
+    height: 55vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-intro svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .intro-text {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 28px;
+  }
+  .intro-text h1 {
+    font-size: 2.2rem;
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    color: #d0c0e8;
+    margin-bottom: 10px;
+  }
+  .intro-text p {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #6a5a8a;
+    letter-spacing: 0.06em;
+  }
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 140px;
+    background: linear-gradient(to top, rgba(10,8,16,1), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .content-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 28px 120px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    margin-top: 56px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-header h2 {
+    font-size: 1rem;
+    font-weight: normal;
+    letter-spacing: 0.16em;
+    color: #b89ad4;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(184,154,212,0.3), transparent);
+  }
+
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .media-card { display: flex; flex-direction: column; gap: 10px; }
+
+  .cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: #14101e;
+    border-radius: 3px;
+    border: 1px solid rgba(184,154,212,0.1);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    opacity: 0.5;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .media-card:hover .cover {
+    opacity: 1;
+    border-color: rgba(184,154,212,0.35);
+  }
+  .cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .media-title { font-size: 0.82rem; color: #c0b0d8; margin-bottom: 3px; }
+  .media-sub   { font-size: 0.72rem; color: #5a4a7a; font-style: italic; margin-bottom: 5px; }
+  .media-note  { font-size: 0.72rem; color: #7a6a9a; font-style: italic; line-height: 1.6; }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #4a3a6a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a { color: #6a5a8a; text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: #b89ad4; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../../index.html">Warren</a>
+</header>
+
+<section class="scene-intro">
+  <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="theaterGlow" cx="50%" cy="70%" r="55%">
+        <stop offset="0%"   stop-color="#1a0a28" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#0a0810" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="#0a0810"/>
+    <rect width="800" height="400" fill="url(#theaterGlow)"/>
+    <g fill="#e0d8f0" opacity="0.3">
+      <circle cx="100" cy="35"  r="1"/><circle cx="260" cy="20"  r="0.8"/>
+      <circle cx="420" cy="40"  r="1.1"/><circle cx="570" cy="18" r="0.9"/>
+      <circle cx="710" cy="38"  r="1"/><circle cx="770" cy="62"  r="0.8"/>
+    </g>
+    <!-- Cinema screen glow -->
+    <rect x="180" y="100" width="440" height="240" rx="4" fill="#14082a" opacity="0.6"/>
+    <rect x="182" y="102" width="436" height="236" rx="3" fill="none" stroke="#2a1040" stroke-width="1" opacity="0.5"/>
+    <!-- Screen light leak -->
+    <rect x="182" y="102" width="436" height="236" rx="3" fill="#1e0e38" opacity="0.3"/>
+    <ellipse cx="400" cy="220" rx="160" ry="80" fill="#3a1060" opacity="0.15"/>
+    <!-- Projector beam -->
+    <path d="M400 0 L300 102 L500 102 Z" fill="#2a1040" opacity="0.15"/>
+    <!-- Theater seats silhouette -->
+    <rect x="0" y="355" width="800" height="45" fill="#070510"/>
+    <g fill="#0e0818">
+      <rect x="60"  y="340" width="30" height="20" rx="3"/>
+      <rect x="100" y="340" width="30" height="20" rx="3"/>
+      <rect x="140" y="340" width="30" height="20" rx="3"/>
+      <rect x="600" y="340" width="30" height="20" rx="3"/>
+      <rect x="640" y="340" width="30" height="20" rx="3"/>
+      <rect x="680" y="340" width="30" height="20" rx="3"/>
+    </g>
+  </svg>
+  <div class="fog-bottom"></div>
+  <div class="intro-text">
+    <h1>Shows &amp; Movies</h1>
+    <p>Films &amp; series worth your time</p>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <div class="section-header">
+    <h2>Shows</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="media-grid">
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Movies</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="media-grid">
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+    <div class="media-card">
+      <div class="cover">◈</div>
+      <div>
+        <div class="media-title">Title</div>
+        <div class="media-note">Your note here.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../media.html">Media</a>
+  <span>›</span>
+  <span>Shows &amp; Movies</span>
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Sky</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0e0c0a;
+    color: #e0d8cc;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(14,12,10,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #c4a96e;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e0d8cc; }
+
+  .scene-intro {
+    width: 100%;
+    height: 60vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-intro svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .intro-text {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 28px;
+  }
+  .intro-text h1 {
+    font-size: 2.2rem;
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    color: #e0d0b0;
+    margin-bottom: 10px;
+  }
+  .intro-text p {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7a5a;
+    letter-spacing: 0.06em;
+  }
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 140px;
+    background: linear-gradient(to top, rgba(14,12,10,1), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Gallery */
+  .gallery-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 24px 120px;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  /* Vary sizes for a magazine feel */
+  .photo-grid .span-2 { grid-column: span 2; }
+  .photo-grid .tall   { grid-row: span 2; }
+
+  .photo-slot {
+    position: relative;
+    background: #141210;
+    border: 1px dashed rgba(200,169,110,0.12);
+    border-radius: 3px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .photo-slot.span-2 { aspect-ratio: 2/1; }
+  .photo-slot.tall   { aspect-ratio: 1/2; }
+  .photo-slot:hover  { border-color: rgba(200,169,110,0.28); }
+
+  .photo-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .photo-slot:hover img { transform: scale(1.03); }
+
+  .placeholder-icon { font-size: 1.3rem; opacity: 0.3; }
+  .placeholder-text { font-size: 0.68rem; font-style: italic; color: #5a4a2a; letter-spacing: 0.06em; }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    color: #e0d8cc;
+    font-size: 1.8rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    font-family: Georgia, serif;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #5a4a2a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a { color: #7a6a4a; text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: #c4a96e; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../../index.html">Warren</a>
+</header>
+
+<section class="scene-intro">
+  <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="#0a0e1a"/>
+        <stop offset="40%"  stop-color="#1a1a2a"/>
+        <stop offset="100%" stop-color="#0e0c0a"/>
+      </linearGradient>
+      <radialGradient id="sunsetGlow" cx="50%" cy="80%" r="50%">
+        <stop offset="0%"   stop-color="#3a2010" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#0e0c0a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#skyGrad)"/>
+    <rect width="800" height="400" fill="url(#sunsetGlow)"/>
+    <!-- Stars -->
+    <g fill="#e0d0b0" opacity="0.4">
+      <circle cx="100" cy="50"  r="1"/><circle cx="220" cy="30"  r="0.8"/>
+      <circle cx="360" cy="55"  r="1.1"/><circle cx="490" cy="25" r="0.9"/>
+      <circle cx="620" cy="45"  r="1"/><circle cx="740" cy="70"  r="0.8"/>
+      <circle cx="160" cy="100" r="0.7"/><circle cx="680" cy="90" r="1"/>
+      <circle cx="400" cy="80"  r="0.8"/><circle cx="550" cy="110" r="0.9"/>
+    </g>
+    <!-- Horizon glow -->
+    <ellipse cx="400" cy="400" rx="500" ry="80" fill="#2a1808" opacity="0.5"/>
+    <!-- Cloud silhouettes -->
+    <g fill="#0a0c14" opacity="0.6">
+      <ellipse cx="200" cy="220" rx="90" ry="30"/>
+      <ellipse cx="260" cy="210" rx="60" ry="22"/>
+      <ellipse cx="600" cy="200" rx="80" ry="25"/>
+      <ellipse cx="650" cy="190" rx="55" ry="20"/>
+    </g>
+  </svg>
+  <div class="fog-bottom"></div>
+  <div class="intro-text">
+    <h1>Sky</h1>
+    <p>Sunsets, clouds &amp; open air</p>
+  </div>
+</section>
+
+<div class="gallery-wrap">
+  <div class="photo-grid">
+    <!-- Row 1: wide + square -->
+    <div class="photo-slot span-2" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNA1q7-yYGx009y7OgrhS3yUN8vSGZzWLGC8efAVXQlVBpbUh84uKz_Sw3DPHZg-bjjYIlQiYxmH1lh8aPw2NsQhykOSt3-zkkKQl5F_vT7w1dfGgg=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNIEO7ynpIpf0f2CmDdRr3u16FKL7Rrh9TQMbKQPRzOb9dNDUo6POzK2ufxSy-fXy6nrvKzE3BIOl1GaD3kwZzGiqZ6xr1eexmwAA4vooGn_i6963c=w2400" alt="">
+    </div>
+    <!-- Row 2: three squares -->
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMsaZSvvUeZDUsnthW87WSSr3FTdkHGq0J1uenSfJ721E0icf1evAPWaKvpYiyjdccoNguT5057eJumFmOGEDPF6PxNX15vez9m_zjrhapP0YzKfVQ=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPvf5wVStze2LphaPgkFKEcTZIAUYc4U8rEIZafsPbeNqPdwtaKN4vRs54jVXblxdGg1PVw5qwK9nJpidUw5C4sb19kgQIIJdaA5qhzrDUBQIxnoDk=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNrXwVLeJr7wqsR_1IQSRkykpI5uqEityfawvAykfynym4Iqtqk73PW-ty60bzKxoYh60wV28tmpbeIFHODBuAk1iGIajsjnieZbHnnbP4flsH4MWI=w2400" alt="">
+    </div>
+    <!-- Row 3: square + wide -->
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPNBtZfSsr60eH_m_VxtHbDkF_T55ZYXeKZOrHwmD-N_cjdQJYhn0pcbRGB9mlB8O3Ku_d6BCFj3fT8OpAlG_QiKnqguGuVF468sr8Br83l8a_-SYg=w2400" alt="">
+    </div>
+    <div class="photo-slot span-2" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOVuHHMJdCQtmTl8r-1TW14wyrMp764PQegbED9GwIRBS6VgA-llO7ZcgHFwDsdOqJKCB70-M36FzR1rp2YOvVe8khkrSBtuj-CfK0ec2EUA6DlhhQ=w2400" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">×</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<nav class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../photos.html">Photos</a>
+  <span>›</span>
+  <span>Sky</span>
+</nav>
+
+<script>
+  function openLightbox(el) {
+    const img = el.querySelector('img');
+    if (!img) return;
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightbox-img').src = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+</body>
+</html>

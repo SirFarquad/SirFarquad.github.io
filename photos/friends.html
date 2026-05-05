@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Friends</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0e0c0a;
+    color: #e0d8cc;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(14,12,10,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #c4a96e;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e0d8cc; }
+
+  .scene-intro {
+    width: 100%;
+    height: 60vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-intro svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .intro-text {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 28px;
+  }
+  .intro-text h1 {
+    font-size: 2.2rem;
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    color: #e0d0b0;
+    margin-bottom: 10px;
+  }
+  .intro-text p {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7a5a;
+    letter-spacing: 0.06em;
+  }
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 140px;
+    background: linear-gradient(to top, rgba(14,12,10,1), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .gallery-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 24px 120px;
+  }
+
+  /* Masonry-ish varied grid for a candid, spontaneous feel */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .photo-grid .span-2 { grid-column: span 2; }
+  .photo-grid .tall   { grid-row: span 2; aspect-ratio: 1/2 !important; }
+
+  .photo-slot {
+    position: relative;
+    background: #141210;
+    border: 1px dashed rgba(200,169,110,0.12);
+    border-radius: 3px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .photo-slot.span-2 { aspect-ratio: 2/1; }
+  .photo-slot:hover  { border-color: rgba(200,169,110,0.28); }
+  .photo-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .photo-slot:hover img { transform: scale(1.03); }
+  .placeholder-icon { font-size: 1.3rem; opacity: 0.3; }
+  .placeholder-text { font-size: 0.68rem; font-style: italic; color: #5a4a2a; letter-spacing: 0.06em; }
+
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 2px; }
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    color: #e0d8cc;
+    font-size: 1.8rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #5a4a2a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a { color: #7a6a4a; text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: #c4a96e; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../../index.html">Warren</a>
+</header>
+
+<section class="scene-intro">
+  <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="warmGlow" cx="50%" cy="60%" r="65%">
+        <stop offset="0%"   stop-color="#2a1a0a" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#0e0c0a" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="candleLight" cx="50%" cy="70%" r="30%">
+        <stop offset="0%"   stop-color="#4a2a08" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#0e0c0a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="#0e0a08"/>
+    <rect width="800" height="400" fill="url(#warmGlow)"/>
+    <rect width="800" height="400" fill="url(#candleLight)"/>
+
+    <!-- Warm bokeh — like indoor party lights -->
+    <g opacity="0.12">
+      <circle cx="120" cy="120" r="45" fill="#d4803a"/>
+      <circle cx="300" cy="80"  r="30" fill="#d4a04a"/>
+      <circle cx="500" cy="100" r="38" fill="#c47030"/>
+      <circle cx="680" cy="90"  r="32" fill="#d4903a"/>
+      <circle cx="200" cy="200" r="25" fill="#c46028"/>
+      <circle cx="600" cy="180" r="28" fill="#d4803a"/>
+    </g>
+
+    <!-- String lights -->
+    <g stroke="#2a1a08" stroke-width="1" fill="none" opacity="0.4">
+      <path d="M0 120 Q100 130 200 118 Q300 106 400 122 Q500 138 600 120 Q700 102 800 115"/>
+    </g>
+    <g fill="#c4803a" opacity="0.5">
+      <circle cx="50"  cy="122" r="2.5"/>
+      <circle cx="150" cy="128" r="2.5"/>
+      <circle cx="250" cy="112" r="2.5"/>
+      <circle cx="350" cy="118" r="2.5"/>
+      <circle cx="450" cy="130" r="2.5"/>
+      <circle cx="550" cy="120" r="2.5"/>
+      <circle cx="650" cy="110" r="2.5"/>
+      <circle cx="750" cy="116" r="2.5"/>
+    </g>
+
+    <!-- Confetti dots — celebration -->
+    <g opacity="0.15">
+      <circle cx="180" cy="300" r="3" fill="#c4803a"/>
+      <circle cx="320" cy="280" r="2" fill="#a06030"/>
+      <circle cx="450" cy="320" r="3" fill="#d4903a"/>
+      <circle cx="590" cy="290" r="2.5" fill="#b07028"/>
+      <circle cx="700" cy="310" r="2" fill="#c4803a"/>
+    </g>
+
+    <!-- Horizon ground -->
+    <ellipse cx="400" cy="400" rx="500" ry="25" fill="#080604"/>
+  </svg>
+  <div class="fog-bottom"></div>
+  <div class="intro-text">
+    <h1>Friends</h1>
+    <p>Moments &amp; memories with the people I love</p>
+  </div>
+</section>
+
+<div class="gallery-wrap">
+  <div class="photo-grid">
+    <!-- Varied layout — candid, spontaneous feel -->
+    <div class="photo-slot tall" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPZ-QeC-yl5hSW4CWLfbaCvCE52LqmZ6cnYMQkpV1EM2xZpCBM4q_6_TxnsyqR52IwGlFKcygivIp8iPuCjgNX4Td6GHIu1a5AJMYtI_O1VWW82nB0=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOfA-yh2Q37_a44bnUJkMvMAikvNUFW5b5OLnTJ4TP-eehdSbWS8opJmxOk7ChmwmLMt2UcUxmp7B0YIZ1jq1lUI6_x9LZM0JSdRRmbjWa8pSfbZ7w=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://drive.google.com/uc?export=view&id=1s3bDoik6yuWKWcuQRV2Sq7QOwkSfJtxM" alt="description">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://drive.google.com/uc?export=view&id=1vvyVzmgykRq07lvGmhk-7oA9_yIZI19b" alt="description">
+    </div>
+    <div class="photo-slot span-2" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOiS2wW6bMLFDHq23Chhisy_xNocI7gzj_s02wKQoE8GDZui6uggY3IiJl5T9yZ60d1KQ3XlQy1WvH_7YiDB-u1ECbxaFJDAFTlbUwh7xE2WSQB-7I=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMS6WO8CLjmRfv_1yM9jIhX1Q2ycuF__Lkk7ePsxmRsJuHOhIe1y8sYq8aC6d0E8469QfInverOF_TI6g6CExINICf0ZUIiDPNP0azS_28ixDHjtrg=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPJV0CVnhxYVgupjyk7Ino-0N_eB_x351f32xDdDNHtiotMANrQ1ITec-e4rlrUmxCbLrccOhcpR1mdq7tbtxNezSobZvh_1I_gcTfbj5fCpj5mahY=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPpxrrqlnACzmr-XErm_jGSPGlEj6yJiBdvuEuUWNeoRbyvSylT-ycwiFZhqhpLHHOogF6ym7R0vOKrbnevpsqo8QHbrJtBUnhzzB8OHRuMmJ3aT5k=w2400" alt="">
+    </div>
+    <div class="photo-slot" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOiU7Q1uTqfYO5_EESFGKsJ2p-DKZP3OnrxXq3cEZRlGAwtSIhT_M2vXNEQbRdnIzmgoPvUV6PWu0fNfMOmOUvb0lNU6S6zOhW5a3t0NpDwX2gFvys=w2400" alt="">
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">×</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<nav class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../photos.html">Photos</a>
+  <span>›</span>
+  <span>Friends</span>
+</nav>
+
+<script>
+  function openLightbox(el) {
+    const img = el.querySelector('img');
+    if (!img) return;
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightbox-img').src = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+</body>
+</html>

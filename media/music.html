@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Music</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0810;
+    color: #e0d8f0;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: center; padding: 18px;
+    background: linear-gradient(to bottom, rgba(10,8,16,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif; font-size: 1.1rem; letter-spacing: 0.18em;
+    color: #b89ad4; text-decoration: none; text-transform: uppercase; transition: color 0.2s;
+  }
+  #site-header a:hover { color: #e0d8f0; }
+
+  .scene-intro {
+    width: 100%; height: 55vh; position: relative;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .scene-intro svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .intro-text { position: relative; z-index: 10; text-align: center; padding: 0 28px; }
+  .intro-text h1 { font-size: 2.2rem; font-weight: normal; letter-spacing: 0.1em; color: #d0c0e8; margin-bottom: 10px; }
+  .intro-text p  { font-size: 0.82rem; font-style: italic; color: #6a5a8a; letter-spacing: 0.06em; }
+  .fog {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 140px;
+    background: linear-gradient(to top, rgba(10,8,16,1), transparent);
+    pointer-events: none; z-index: 5;
+  }
+
+  .content-wrap { max-width: 960px; margin: 0 auto; padding: 48px 28px 120px; }
+
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; margin-top: 56px; }
+  .section-header:first-child { margin-top: 0; }
+  .section-header h2 { font-size: 1rem; font-weight: normal; letter-spacing: 0.16em; color: #b89ad4; text-transform: uppercase; white-space: nowrap; }
+  .divider { flex: 1; height: 1px; background: linear-gradient(to right, rgba(184,154,212,0.3), transparent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  /* Each card: image on top, label below */
+  .card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  /* Cover is always a perfect square via the padding trick */
+  .cover {
+    width: 100%;
+    position: relative;
+    background: #14101e;
+    border: 1px solid rgba(184,154,212,0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: border-color 0.2s, opacity 0.2s;
+  }
+  .cover::before { content: ''; display: block; padding-top: 100%; }
+  .cover.circle { border-radius: 50%; }
+  .card:hover .cover { opacity: 1; border-color: rgba(184,154,212,0.4); }
+
+  /* Real image goes here — position absolute to fill the square */
+  .cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .label { font-size: 0.74rem; color: #c0b0d8; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sub   { font-size: 0.68rem; color: #5a4a7a; font-style: italic; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .breadcrumb {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    z-index: 100; font-size: 0.7rem; letter-spacing: 0.12em;
+    color: #4a3a6a; text-transform: uppercase; white-space: nowrap;
+  }
+  .breadcrumb a { color: #6a5a8a; text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: #b89ad4; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header"><a href="../../index.html">Warren</a></header>
+
+<section class="scene-intro">
+  <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#1a0a30" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#0a0810" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="#0a0810"/>
+    <rect width="800" height="400" fill="url(#g)"/>
+    <g fill="#e0d8f0" opacity="0.4">
+      <circle cx="100" cy="40" r="1"/><circle cx="240" cy="25" r="0.8"/>
+      <circle cx="380" cy="50" r="1.1"/><circle cx="520" cy="20" r="0.9"/>
+      <circle cx="660" cy="42" r="1"/><circle cx="760" cy="65" r="0.8"/>
+    </g>
+    <circle cx="400" cy="230" r="110" fill="#0d0a18" opacity="0.7"/>
+    <circle cx="400" cy="230" r="85"  fill="none" stroke="#2a1a40" stroke-width="1" opacity="0.4"/>
+    <circle cx="400" cy="230" r="55"  fill="none" stroke="#1e1230" stroke-width="1" opacity="0.3"/>
+    <circle cx="400" cy="230" r="18"  fill="#1a0a28" opacity="0.8"/>
+    <circle cx="400" cy="230" r="5"   fill="#3a2a50" opacity="0.9"/>
+  </svg>
+  <div class="fog"></div>
+  <div class="intro-text">
+    <h1>Music</h1>
+    <p>Artists &amp; albums that move me</p>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <div class="section-header">
+    <h2>Favorite Artists</h2>
+    <div class="divider"></div>
+  </div>
+
+  <!--
+    HOW TO ADD AN ARTIST:
+    <div class="card">
+      <div class="cover"><img src="your-image.jpg" alt="Artist Name"></div>
+      <div class="label">Artist Name</div>
+    </div>
+  -->
+  <div class="grid">
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover circle"></div><div class="label">—</div></div>
+  </div>
+
+  <div class="section-header">
+    <h2>Favorite Albums</h2>
+    <div class="divider"></div>
+  </div>
+
+  <!--
+    HOW TO ADD AN ALBUM:
+    <div class="card">
+      <div class="cover"><img src="your-image.jpg" alt="Album Name"></div>
+      <div class="label">Album Name</div>
+      <div class="sub">Artist Name</div>
+    </div>
+  -->
+  <div class="grid">
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+    <div class="card"><div class="cover"></div><div class="label">—</div></div>
+  </div>
+
+</div>
+
+<nav class="breadcrumb">
+  <a href="../../index.html">Home</a><span>›</span>
+  <a href="../media.html">Media</a><span>›</span>
+  <span>Music</span>
+</nav>
+
+</body>
+</html>

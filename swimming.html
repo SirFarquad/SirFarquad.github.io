@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — Swimming</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #060d14;
+    color: #d4eaf5;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Fixed name header */
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(6,13,20,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #7acbef;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #d4eaf5; }
+
+  /* SCENE 1 — full viewport, trunk/story */
+  .scene-story {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .scene-story svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .story-text {
+    position: relative;
+    z-index: 10;
+    max-width: 480px;
+    padding: 0 28px;
+    text-align: center;
+  }
+
+  .story-text h1 {
+    font-size: 2rem;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    color: #a8dff5;
+    margin-bottom: 20px;
+  }
+
+  .story-text p {
+    font-size: 0.9rem;
+    line-height: 2;
+    color: #8fbfd4;
+    font-style: italic;
+  }
+
+  .scroll-hint {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: #3a7a9a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Fog overlays */
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, rgba(6,13,20,0.95), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .fog-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(6,13,20,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* SCENE 2 — branches */
+  .scene-branches {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .scene-branches svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .branch-cards {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 28px;
+    padding: 0 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .branch-card {
+    background: rgba(6,13,20,0.75);
+    border: 1px solid rgba(100,180,220,0.2);
+    border-radius: 6px;
+    padding: 32px 36px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    min-width: 200px;
+  }
+  .branch-card:hover {
+    border-color: rgba(100,180,220,0.55);
+    background: rgba(10,22,34,0.9);
+    transform: translateY(-4px);
+  }
+
+  .branch-card .icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 14px;
+    opacity: 0.8;
+  }
+
+  .branch-card h3 {
+    font-family: Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: normal;
+    letter-spacing: 0.08em;
+    color: #7acbef;
+    margin-bottom: 8px;
+  }
+
+  .branch-card p {
+    font-size: 0.76rem;
+    font-style: italic;
+    color: #4a8aaa;
+    line-height: 1.6;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #3a6a8a;
+    text-transform: uppercase;
+  }
+  .breadcrumb a {
+    color: #4a8aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumb a:hover { color: #7acbef; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../index.html">Warren</a>
+</header>
+
+<!-- SCENE 1: The Story -->
+<section class="scene-story">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="waterGlow" cx="50%" cy="60%" r="60%">
+        <stop offset="0%" stop-color="#0a2a3a" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#060d14" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="waterSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0a2030" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#060d14"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Deep water background -->
+    <rect width="800" height="600" fill="#060d14"/>
+    <rect width="800" height="600" fill="url(#waterGlow)"/>
+
+    <!-- Subtle light rays from above -->
+    <g opacity="0.06">
+      <path d="M300 0 L240 600" stroke="#7acbef" stroke-width="40"/>
+      <path d="M420 0 L380 600" stroke="#7acbef" stroke-width="25"/>
+      <path d="M560 0 L620 600" stroke="#7acbef" stroke-width="35"/>
+    </g>
+
+    <!-- Water ripple lines -->
+    <g stroke="#1a4a6a" stroke-width="1" fill="none" opacity="0.4">
+      <ellipse cx="400" cy="480" rx="300" ry="18"/>
+      <ellipse cx="400" cy="510" rx="260" ry="14"/>
+      <ellipse cx="400" cy="535" rx="200" ry="10"/>
+      <ellipse cx="400" cy="455" rx="320" ry="20"/>
+    </g>
+
+    <!-- Lane lines hinted -->
+    <g stroke="#1a3a5a" stroke-width="1.5" opacity="0.25" stroke-dasharray="12 8">
+      <line x1="0" y1="200" x2="800" y2="200"/>
+      <line x1="0" y1="340" x2="800" y2="340"/>
+      <line x1="0" y1="480" x2="800" y2="480"/>
+    </g>
+
+    <!-- Bubbles -->
+    <g fill="#1a5a7a" opacity="0.3">
+      <circle cx="180" cy="380" r="4"/>
+      <circle cx="195" cy="355" r="2.5"/>
+      <circle cx="172" cy="330" r="3.5"/>
+      <circle cx="620" cy="400" r="3"/>
+      <circle cx="635" cy="372" r="2"/>
+      <circle cx="608" cy="345" r="4"/>
+      <circle cx="400" cy="420" r="2.5"/>
+      <circle cx="415" cy="395" r="1.5"/>
+    </g>
+  </svg>
+
+  <div class="fog-bottom"></div>
+
+  <div class="story-text">
+    <h1>Swimming</h1>
+    <p>
+      I started swimming at 7 when my dad first took me swimming at our local
+      Marriott hotel pool. He just wanted me to do a sport with a low risk of
+      injury, but I soon fell in love with it. I was with Scarlet Aquatics briefly
+      for a year, but switched to the Wyckoff Family YMCA Sharks and swam with
+      them from 8 to 18. Thank you to Coach Peta for putting up with me all those
+      years. These were some of the best times of my life and it is through the
+      sport that I have met some lifelong friends. I currently swim for Illini
+      Swim Club, and it has been a blast so far!
+    </p>
+    <div class="scroll-hint">↓ scroll to explore ↓</div>
+  </div>
+</section>
+
+<!-- SCENE 2: The Branches -->
+<section class="scene-branches">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="600" fill="#060d14"/>
+
+    <!-- Deeper, darker water — we're zoomed out -->
+    <g opacity="0.07">
+      <path d="M200 0 L140 600" stroke="#5aaad4" stroke-width="50"/>
+      <path d="M500 0 L540 600" stroke="#5aaad4" stroke-width="30"/>
+    </g>
+
+    <g stroke="#0d3a5a" stroke-width="1" fill="none" opacity="0.3">
+      <ellipse cx="400" cy="520" rx="380" ry="22"/>
+      <ellipse cx="400" cy="548" rx="340" ry="16"/>
+      <ellipse cx="400" cy="490" rx="360" ry="18"/>
+    </g>
+  </svg>
+
+  <div class="fog-top"></div>
+  <div class="fog-bottom"></div>
+
+  <div class="branch-cards">
+    <a class="branch-card" href="swimming/highschool.html">
+      <span class="icon">🏊</span>
+      <h3>High School</h3>
+      <p>Wyckoff YMCA Sharks<br>& Ramapo High School</p>
+    </a>
+    <a class="branch-card" href="swimming/college.html">
+      <span class="icon">〰</span>
+      <h3>College</h3>
+      <p>Illini Swim Club<br>at UIUC</p>
+    </a>
+  </div>
+</section>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb">
+  <a href="../index.html">Home</a>
+  <span>›</span>
+  <span>Swimming</span>
+</nav>
+
+</body>
+</html>

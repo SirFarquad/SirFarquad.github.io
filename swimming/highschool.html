@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warren — High School Swimming</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #060d14;
+    color: #d4eaf5;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to bottom, rgba(6,13,20,0.95), transparent);
+  }
+  #site-header a {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: #7acbef;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #site-header a:hover { color: #d4eaf5; }
+
+  /* Scene 1 — story */
+  .scene-story {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .scene-story svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .story-text {
+    position: relative;
+    z-index: 10;
+    max-width: 480px;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .story-text h1 {
+    font-size: 1.8rem;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    color: #a8dff5;
+    margin-bottom: 8px;
+  }
+  .story-text h2 {
+    font-size: 1rem;
+    font-weight: normal;
+    font-style: italic;
+    color: #4a8aaa;
+    margin-bottom: 22px;
+    letter-spacing: 0.04em;
+  }
+  .story-text p {
+    font-size: 0.9rem;
+    line-height: 2;
+    color: #8fbfd4;
+    font-style: italic;
+  }
+  .scroll-hint {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: #3a7a9a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .fog-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, rgba(6,13,20,0.95), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .fog-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(6,13,20,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Content sections */
+  .content-section {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 32px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .section-header h2 {
+    font-size: 1.3rem;
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    color: #a8dff5;
+    text-transform: uppercase;
+  }
+  .section-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(100,180,220,0.3), transparent);
+  }
+
+  /* Photo grid */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .photo-placeholder {
+    aspect-ratio: 1;
+    background: rgba(15,30,45,0.8);
+    border: 1px dashed rgba(100,180,220,0.15);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #2a5a7a;
+    font-size: 0.7rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    transition: border-color 0.2s;
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-placeholder:hover {
+    border-color: rgba(100,180,220,0.3);
+  }
+  /* When you add real images, use this class on an <img> tag inside the div */
+  .photo-placeholder img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-placeholder .placeholder-icon {
+    font-size: 1.4rem;
+    opacity: 0.4;
+  }
+  .photo-placeholder .placeholder-text {
+    opacity: 0.5;
+  }
+
+  /* Video grid */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .video-placeholder {
+    aspect-ratio: 16/9;
+    background: rgba(15,30,45,0.8);
+    border: 1px dashed rgba(100,180,220,0.15);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #2a5a7a;
+    font-size: 0.7rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    overflow: hidden;
+    position: relative;
+  }
+  /* When you add real YouTube embeds, replace the div contents with:
+     <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID"
+     frameborder="0" allowfullscreen style="position:absolute;inset:0;"></iframe> */
+  .video-placeholder .placeholder-icon {
+    font-size: 2rem;
+    opacity: 0.35;
+  }
+  .video-placeholder .placeholder-text {
+    opacity: 0.45;
+  }
+
+  .section-note {
+    margin-top: 16px;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: #2a5a7a;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  .breadcrumb {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #3a6a8a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .breadcrumb a {
+    color: #4a8aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumb a:hover { color: #7acbef; }
+  .breadcrumb span { margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="../../index.html">Warren</a>
+</header>
+
+<!-- Scene 1: Story -->
+<section class="scene-story">
+  <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="waterGlow" cx="50%" cy="55%" r="60%">
+        <stop offset="0%" stop-color="#0a2a3a" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#060d14" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="600" fill="#060d14"/>
+    <rect width="800" height="600" fill="url(#waterGlow)"/>
+    <g opacity="0.05">
+      <path d="M250 0 L190 600" stroke="#7acbef" stroke-width="50"/>
+      <path d="M460 0 L500 600" stroke="#7acbef" stroke-width="30"/>
+      <path d="M640 0 L680 600" stroke="#7acbef" stroke-width="40"/>
+    </g>
+    <g stroke="#1a3a5a" stroke-width="1.5" opacity="0.2" stroke-dasharray="12 8">
+      <line x1="0" y1="180" x2="800" y2="180"/>
+      <line x1="0" y1="320" x2="800" y2="320"/>
+      <line x1="0" y1="460" x2="800" y2="460"/>
+    </g>
+    <g fill="#1a5a7a" opacity="0.25">
+      <circle cx="140" cy="360" r="4"/><circle cx="155" cy="330" r="2.5"/>
+      <circle cx="130" cy="300" r="3"/><circle cx="660" cy="390" r="3.5"/>
+      <circle cx="675" cy="360" r="2"/><circle cx="648" cy="328" r="4"/>
+    </g>
+    <g stroke="#1a4a6a" stroke-width="1" opacity="0.2">
+      <line x1="0" y1="80" x2="800" y2="80"/>
+      <line x1="100" y1="60" x2="100" y2="80"/><line x1="200" y1="60" x2="200" y2="80"/>
+      <line x1="300" y1="60" x2="300" y2="80"/><line x1="400" y1="60" x2="400" y2="80"/>
+      <line x1="500" y1="60" x2="500" y2="80"/><line x1="600" y1="60" x2="600" y2="80"/>
+      <line x1="700" y1="60" x2="700" y2="80"/>
+    </g>
+  </svg>
+  <div class="fog-bottom"></div>
+  <div class="story-text">
+    <h1>High School</h1>
+    <h2>Wyckoff YMCA Sharks &amp; Ramapo High School</h2>
+    <p>
+      I swam with the Wyckoff Sharks as well as Ramapo High School during
+      my high school career. These were some of the most fun moments I had
+      and it's where I found my love for the sport.
+    </p>
+    <div class="scroll-hint">↓ scroll to see photos &amp; videos ↓</div>
+  </div>
+</section>
+
+<!-- Photos Section -->
+<div class="content-section">
+  <div class="section-header">
+    <h2>Photos</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="photo-grid">
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.40.36 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.40.51 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.41.03 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.41.35 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.44.35 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.45.52 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.46.00 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.46.23 PM.png" alt="">
+    </div>
+    <div class="photo-placeholder">
+      <img src="../images/Screenshot 2026-05-04 at 11.47.33 PM.png" alt="">
+    </div>
+  </div>
+  <p class="section-note">Add photos by replacing placeholder divs with &lt;img&gt; tags linking to your images.</p>
+</div>
+
+<!-- Videos Section -->
+<div class="content-section">
+  <div class="section-header">
+    <h2>Videos</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="video-grid">
+    <!-- To add a real video, replace the placeholder div contents with:
+         <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID"
+         frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe> -->
+    <div class="video-placeholder">
+      <iframe width="100%" height="100%"
+        src="https://www.youtube.com/embed/c_PjOiSHMwM?si=XIUplB10NCMuUzEc"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        style="position:absolute;inset:0;width:100%;height:100%;">
+      </iframe>
+    </div>
+  </div>
+  <p class="section-note">Add videos by pasting YouTube embed iframes into the placeholder divs.</p>
+</div>
+
+<nav class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../swimming.html">Swimming</a>
+  <span>›</span>
+  <span>High School</span>
+</nav>
+
+</body>
+</html>
